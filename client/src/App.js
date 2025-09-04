@@ -17,6 +17,8 @@ function App() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const localVideoRef = useRef(null);
+  const localStreamRef = useRef(null);
+
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
@@ -94,6 +96,7 @@ function App() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       localVideoRef.current.srcObject = stream;
+      localStreamRef.current = stream;
       socket.emit('join-room', { roomId, userName });
       setJoined(true);
     } catch (err) {
