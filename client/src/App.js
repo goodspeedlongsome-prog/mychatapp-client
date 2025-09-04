@@ -92,17 +92,25 @@ function App() {
     return peerConnection;
   };
 
-  const joinRoom = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      localVideoRef.current.srcObject = stream;
-      localStreamRef.current = stream;
-      socket.emit('join-room', { roomId, userName });
-      setJoined(true);
-    } catch (err) {
-      alert('カメラまたはマイクが見つかりません');
-    }
-  };
+const joinRoom = async () => {
+  try {
+    const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const combinedStream = new MediaStream([
+      ...videoStream.getVideoTracks(),
+      ...audioStream.getAudioTracks(),
+    ]);
+
+    localVideoRef.current.srcObject = combinedStream;
+    localStreamRef.current = combinedStream;
+
+    socket.emit('join-room', { roomId, userName });
+    setJoined(true);
+  } catch (err) {
+    alert('カメラまたはマイクが見つかりません');
+  }
+};
 
   const sendMessage = () => {
     if (!message && !file) return;
