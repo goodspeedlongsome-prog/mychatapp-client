@@ -97,10 +97,13 @@ const joinRoom = async () => {
     const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
     const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const combinedStream = new MediaStream([
-      ...videoStream.getVideoTracks(),
-      ...audioStream.getAudioTracks(),
-    ]);
+const combinedStream = new MediaStream([
+  ...videoStream.getVideoTracks(),
+  ...audioStream.getAudioTracks(),
+]);
+
+console.log("映像トラック:", videoStream.getVideoTracks());
+console.log("音声トラック:", audioStream.getAudioTracks());
 
     localVideoRef.current.srcObject = combinedStream;
     localStreamRef.current = combinedStream;
